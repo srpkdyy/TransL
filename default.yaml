@@ -1,0 +1,7 @@
+window:
+  width: 320
+  height: 240
+
+deepl:
+  source_lang: EN
+  target_lang: JA

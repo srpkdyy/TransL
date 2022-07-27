@@ -1,0 +1,22 @@
+BoxLayout:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    orientation: 'vertical'
+
+    Label:
+        text: 'DeepL APIの認証キーを入力してください'
+        color: 0, 0, 0, 1
+
+    TextInput:
+        id: auth_key
+        color: 0, 0, 0, 1
+
+    Button:
+        text: '保存'
+        on_press: app.save_config()
+    

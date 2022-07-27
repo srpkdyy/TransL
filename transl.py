@@ -4,10 +4,9 @@ import pyperclip
 import japanize_kivy
 from unicodedata import category
 from kivy.app import App
-from kivy.core.window import Window
 from kivy.uix.scrollview import ScrollView
 from kivy.clock import Clock
-
+from kivy.config import Config
 
 
 
@@ -28,19 +27,25 @@ class Translator:
         self.translated_text = self.cache.get(text)
 
         if self.translated_text is None:
-            self.translated_text = self.deepl.translate_text(
-                text=self.remove_control_characters(text),
-                source_lang=self.source_lang,
-                target_lang=self.target_lang
-            ).text
-            self.text = text
-            self.cache[text] = self.translated_text
+
+            try:
+                self.translated_text = self.deepl.translate_text(
+                    text=self.remove_control_char(text),
+                    source_lang=self.source_lang,
+                    target_lang=self.target_lang
+                ).text
+            except deepl.exceptions.AuthorizationException:
+                self.translated_text = '認証キーが不正です。\n'\
+                    'config.yamlを削除後、再起動してください。\n'\
+                    'またはconfig.yamlのキーを修正してください。'
+            else:
+                self.text = text
+                self.cache[text] = self.translated_text
         
         return self.translated_text
 
-    def remove_control_characters(self, raw_text):
+    def remove_control_char(self, raw_text):
         return ''.join([t for t in raw_text if category(t) != 'Cc'])
-
 
 
 class TextViewer(ScrollView):
@@ -63,10 +68,12 @@ class TransL(App):
         return TextViewer()
 
 
+
 if __name__ == '__main__':
     with open('config.yaml') as f:
         cfg = yaml.safe_load(f)
 
-    Window.size = (cfg['window']['width'], cfg['window']['height'])
-    Window.clearcolor = (1, 1, 1, 1)
+    Config.set('graphics', 'width', cfg['window']['width'])
+    Config.set('graphics', 'height', cfg['window']['height'])
+
     TransL().run()

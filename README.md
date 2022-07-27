@@ -6,9 +6,10 @@ DeepLを用いた翻訳ソフトです。コピーした文章を英語から日
 ## Environment
 - Windows 10
 - Python 3.9
+- conda 4.8
 
 ## Usage
 ```bash
-pip install -r requirements.txt
+conda create -n transl --file package-list.txt
 python launch.py
 ```
